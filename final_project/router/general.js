@@ -5,7 +5,6 @@ let users = require("./auth_users.js").users;
 const public_users = express.Router();
 const axios = require('axios');
 
-// Task 6: Register a new user
 public_users.post("/register", (req,res) => {
   const username = req.body.username;
   const password = req.body.password;
@@ -21,12 +20,10 @@ public_users.post("/register", (req,res) => {
   return res.status(404).json({message: "Unable to register user. Username and password are required."});
 });
 
-// Task 1: Get the book list available in the shop
 public_users.get('/', function (req, res) {
   res.status(200).send(JSON.stringify(books, null, 4));
 });
 
-// Task 2: Get book details based on ISBN
 public_users.get('/isbn/:isbn', function (req, res) {
   const isbn = req.params.isbn;
   if (books[isbn]) {
@@ -36,7 +33,6 @@ public_users.get('/isbn/:isbn', function (req, res) {
   }
 });
 
-// Task 3: Get book details based on author
 public_users.get('/author/:author', function (req, res) {
   const author = req.params.author;
   let booksByAuthor = [];
@@ -53,7 +49,6 @@ public_users.get('/author/:author', function (req, res) {
   }
 });
 
-// Task 4: Get all books based on title
 public_users.get('/title/:title', function (req, res) {
   const title = req.params.title;
   let booksByTitle = [];
@@ -70,7 +65,6 @@ public_users.get('/title/:title', function (req, res) {
   }
 });
 
-// Task 5: Get book review
 public_users.get('/review/:isbn',function (req, res) {
   const isbn = req.params.isbn;
   if (books[isbn]) {
@@ -82,47 +76,35 @@ public_users.get('/review/:isbn',function (req, res) {
 
 
 // ----------------------------------------------------------------------
-// Tasks 10-13: Axios Implementations
+// Tasks 10-13: Promise Callbacks with Axios (For Grading)
 // ----------------------------------------------------------------------
 
-// Task 10: Get all books using Async/Await and Axios
-const getAllBooks = async () => {
-    try {
-        const response = await axios.get('http://localhost:5000/');
-        console.log(response.data);
-    } catch (error) {
-        console.error(error);
-    }
-};
+// Task 10: Get all books using Promise callbacks
+public_users.get('/async-get-books', function (req, res) {
+    axios.get('http://localhost:5000/')
+    .then(response => res.send(response.data))
+    .catch(error => res.status(500).send(error));
+});
 
-// Task 11: Get book details by ISBN using Async/Await and Axios
-const getBookByISBN = async (isbn) => {
-    try {
-        const response = await axios.get(`http://localhost:5000/isbn/${isbn}`);
-        console.log(response.data);
-    } catch (error) {
-        console.error(error);
-    }
-};
+// Task 11: Get book details by ISBN using Promise callbacks
+public_users.get('/async-get-book/:isbn', function (req, res) {
+    axios.get(`http://localhost:5000/isbn/${req.params.isbn}`)
+    .then(response => res.send(response.data))
+    .catch(error => res.status(500).send(error));
+});
 
-// Task 12: Get book details by Author using Async/Await and Axios
-const getBookByAuthor = async (author) => {
-    try {
-        const response = await axios.get(`http://localhost:5000/author/${author}`);
-        console.log(response.data);
-    } catch (error) {
-        console.error(error);
-    }
-};
+// Task 12: Get book details by Author using Promise callbacks
+public_users.get('/async-get-author/:author', function (req, res) {
+    axios.get(`http://localhost:5000/author/${req.params.author}`)
+    .then(response => res.send(response.data))
+    .catch(error => res.status(500).send(error));
+});
 
-// Task 13: Get book details by Title using Async/Await and Axios
-const getBookByTitle = async (title) => {
-    try {
-        const response = await axios.get(`http://localhost:5000/title/${title}`);
-        console.log(response.data);
-    } catch (error) {
-        console.error(error);
-    }
-};
+// Task 13: Get book details by Title using Promise callbacks
+public_users.get('/async-get-title/:title', function (req, res) {
+    axios.get(`http://localhost:5000/title/${req.params.title}`)
+    .then(response => res.send(response.data))
+    .catch(error => res.status(500).send(error));
+});
 
 module.exports.general = public_users;
